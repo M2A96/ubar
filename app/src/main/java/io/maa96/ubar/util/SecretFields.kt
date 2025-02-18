@@ -5,6 +5,8 @@ import javax.inject.Inject
 class SecretFields @Inject constructor() {
     private val debugBaseUrl = "https://stage.achareh.ir/api/karfarmas/"
     private val releaseBaseUrl = "https://stage.achareh.ir/api/karfarmas/"
+    private val username = "09822222222"
+    private val password = "Sana12345678"
 
 
     //    todo remember to use BuildConfig.DEBUG
@@ -16,4 +18,7 @@ class SecretFields @Inject constructor() {
             releaseBaseUrl
         }
     }
+
+    fun getPassword() = password
+    fun getUsername() = username
 }

@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Ubar</string>
+    <string name="gender">Gender</string>
+    <string name="male">male</string>
+    <string name="female">female</string>
+    <string name="name">نام</string>
+    <string name="exact_address">آدرس دقیق</string>
+
 </resources>

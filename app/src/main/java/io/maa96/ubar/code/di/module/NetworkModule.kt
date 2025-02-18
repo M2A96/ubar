@@ -1,6 +1,5 @@
 package io.maa96.ubar.code.di.module
 
-import com.facebook.stetho.okhttp3.BuildConfig
 import com.facebook.stetho.okhttp3.StethoInterceptor
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -11,11 +10,13 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import io.maa96.ubar.BuildConfig
 import io.maa96.ubar.code.di.qualifier.WithToken
 import io.maa96.ubar.code.di.qualifier.WithoutToken
 import io.maa96.ubar.data.api.UbarApi
 import io.maa96.ubar.util.SecretFields
 import okhttp3.Authenticator
+import okhttp3.Credentials
 import okhttp3.Headers
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -105,10 +106,10 @@ object NetworkModule {
                     // add default shared headers to every http request
                     .headers(headers)
                     // add tokenType and token to Authorization header of request
-//                    .addHeader(
-//                        "Authorization",
-//                        preferencesHelper.tokenType + " " + preferencesHelper.token
-//                    )
+                    .addHeader(
+                        "Authorization",
+                        Credentials.basic(secretFields.getUsername(), secretFields.getPassword())
+                    )
                     .method(request.method, request.body)
                 chain.proceed(requestBuilder.build())
             }
@@ -143,6 +144,10 @@ object NetworkModule {
                 val request = chain.request()
                 val requestBuilder = request.newBuilder()
                     .headers(headers)
+                    .addHeader(
+                        "Authorization",
+                        Credentials.basic(secretFields.getUsername(), secretFields.getPassword())
+                    )
                     .method(request.method, request.body)
                 chain.proceed(requestBuilder.build())
             }
@@ -175,25 +180,25 @@ object NetworkModule {
             .build()
     }
 
-    /**
-     * provide an instance of [Retrofit] for with-token api services
-     *
-     * @param okHttpClient an instance of with-token [okHttpClient] provided by [provideOkHttpClientWithToken]
-     * @param gson an instance of gson provided by [provideGson] to use as retrofit converter factory
-     *
-     * @return an instance of [Retrofit] for with-token api calls
-     */
-    @Singleton
-    @Provides
-    @WithToken
-    fun provideRetrofitWithToken(@WithToken okHttpClient: OkHttpClient, gson: Gson): Retrofit {
-        return Retrofit.Builder().client(okHttpClient)
-            // create gson converter factory
-            .addConverterFactory(GsonConverterFactory.create(gson))
-            // get base url from SecretFields interface
-            .baseUrl(SecretFields().getBaseUrl())
-            .build()
-    }
+//    /**
+//     * provide an instance of [Retrofit] for with-token api services
+//     *
+//     * @param okHttpClient an instance of with-token [okHttpClient] provided by [provideOkHttpClientWithToken]
+//     * @param gson an instance of gson provided by [provideGson] to use as retrofit converter factory
+//     *
+//     * @return an instance of [Retrofit] for with-token api calls
+//     */
+//    @Singleton
+//    @Provides
+//    @WithToken
+//    fun provideRetrofitWithToken(@WithToken okHttpClient: OkHttpClient, gson: Gson): Retrofit {
+//        return Retrofit.Builder().client(okHttpClient)
+//            // create gson converter factory
+//            .addConverterFactory(GsonConverterFactory.create(gson))
+//            // get base url from SecretFields interface
+//            .baseUrl(SecretFields().getBaseUrl())
+//            .build()
+//    }
 
     @Provides
     @Singleton
