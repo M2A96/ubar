@@ -11,7 +11,7 @@ fun UbarApp(){
         val navController = rememberNavController()
         NavHost(
             navController = navController,
-            startDestination = Screen.Login.route
+            startDestination = Screen.List.route
         ) {
             ubarNavGraph(navController)
         }

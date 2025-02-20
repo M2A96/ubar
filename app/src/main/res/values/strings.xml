@@ -5,5 +5,6 @@
     <string name="female">female</string>
     <string name="name">نام</string>
     <string name="exact_address">آدرس دقیق</string>
+    <string name="next_step">مرحله بعد</string>
 
 </resources>

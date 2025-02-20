@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -38,25 +39,33 @@ class LoginScreenViewModel @Inject constructor(
     fun onEvent(event: LoginScreenEvent) {
         when(event) {
             is LoginScreenEvent.OnNameChange -> {
-                updateLocation(Location(
-                    firstName = event.name
-                ))
+                _state.update {
+                    it.copy(
+                        name = event.name
+                    )
+                }
             }
             is LoginScreenEvent.OnFamilyNameChange -> {
-                updateLocation(Location(
-                    lastName = event.familyName
-                ))
+                _state.update {
+                    it.copy(
+                        familyName = event.familyName
+                    )
+                }
             }
             is LoginScreenEvent.OnMobilePhoneChange -> {
-                updateLocation(Location(
-                    coordinateMobile = event.mobilePhone
-                ))
+                _state.update {
+                    it.copy(
+                        mobilePhone = event.mobilePhone
+                    )
+                }
             }
 
             is LoginScreenEvent.OnAddressChange -> {
-                updateLocation(Location(
-                    address = event.address
-                ))
+                _state.update {
+                    it.copy(
+                        address = event.address
+                    )
+                }
             }
             is LoginScreenEvent.OnGenderChange -> {
                 updateLocation(Location(

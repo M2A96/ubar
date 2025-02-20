@@ -74,6 +74,6 @@ dependencies {
     implementation(libs.stetho.okhttp3)
     implementation(libs.converter.gson)
     implementation(libs.logging.interceptor)
-//    implementation(libs.androidx.collection.ktx)
-//    implementation(libs.androidx.animation)
+    // Android Maps Compose composables for the Maps SDK for Android
+    implementation(libs.maps.compose)
 }

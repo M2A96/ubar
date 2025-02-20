@@ -14,6 +14,12 @@ data class LoginData(
 
 data class LoginScreenState (
     val location: Location = Location(),
+    val name: String = "",
+    val familyName: String = "",
+    val mobilePhone: String = "",
+    val landlinePhone: String = "",
+    val address: String = "",
+    val gender: Gender = Gender.MALE,
     val isLoading: Boolean = false,
     val error: String? = null
 )

@@ -24,6 +24,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.Date
+import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 /**
@@ -116,6 +117,9 @@ object NetworkModule {
         )
 
         builder.authenticator(authenticator)
+        builder.connectTimeout(60, TimeUnit.SECONDS)
+            .readTimeout(60, TimeUnit.SECONDS)
+            .writeTimeout(60, TimeUnit.SECONDS)
 
         return builder.build()
     }
@@ -152,6 +156,9 @@ object NetworkModule {
                 chain.proceed(requestBuilder.build())
             }
         )
+        builder.connectTimeout(60, TimeUnit.SECONDS)
+            .readTimeout(60, TimeUnit.SECONDS)
+            .writeTimeout(60, TimeUnit.SECONDS)
 
         return builder.build()
     }

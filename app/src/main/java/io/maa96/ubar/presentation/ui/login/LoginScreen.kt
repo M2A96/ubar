@@ -23,6 +23,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,6 +32,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.google.maps.android.compose.GoogleMap
 import io.maa96.ubar.R
 import io.maa96.ubar.presentation.theme.UbarTheme
 
@@ -63,17 +65,16 @@ fun LoginScreen(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        TextInputLayout(
-            value = state.location.firstName,
-            onValueChange = { onEvent(LoginScreenEvent.OnNameChange(it)) },
-            label = "نام",
-            isValid = state.location.firstName.isNotBlank()
+        TextField(
+            value = state.name,
+            onValueChange = {  onEvent(LoginScreenEvent.OnNameChange(it))},
+            label = { Text("Label") }
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
         TextInputLayout(
-            value = state.location.lastName,
+            value = state.familyName,
             onValueChange = { onEvent(LoginScreenEvent.OnFamilyNameChange(it)) },
             label = "نام خانوادگی"
         )
@@ -122,7 +123,6 @@ fun LoginScreen(
             onGenderSelected = { onEvent(LoginScreenEvent.OnGenderChange(it)) }
         )
 
-        Spacer(modifier = Modifier.weight(1f))
 
         if (state.error != null) {
             Text(
@@ -137,9 +137,10 @@ fun LoginScreen(
             onClick = { onEvent(LoginScreenEvent.OnNextButtonClick(state.location)) },
             modifier = Modifier
                 .fillMaxWidth()
-                .height(56.dp),
+                .height(56.dp)
+                .border(1.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(8.dp)),
             colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.tertiary
+                containerColor = MaterialTheme.colorScheme.primary
             ),
             enabled = !state.isLoading && state.location.firstName.isNotBlank() && state.location.coordinateMobile.isNotBlank()
         ) {
@@ -150,7 +151,7 @@ fun LoginScreen(
                 )
             } else {
                 Text(
-                    text = "مرحله بعد",
+                    text = stringResource(R.string.next_step),
                     style = MaterialTheme.typography.titleMedium
                 )
             }
@@ -203,13 +204,14 @@ private fun GenderSelector(
                     color = MaterialTheme.colorScheme.surface,
                     shape = RoundedCornerShape(8.dp)
                 ),
-            horizontalArrangement = Arrangement.SpaceEvenly
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
                 text = stringResource(R.string.gender),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.padding(bottom = 8.dp),
+                modifier = Modifier.padding(bottom = 8.dp, start = 8.dp)
             )
             GenderOption(
                 text = stringResource(R.string.male),
@@ -252,6 +254,13 @@ private fun GenderOption(
             else MaterialTheme.colorScheme.onSurface
         )
     }
+}
+
+@Composable
+fun OpenGoogleMap(){
+    GoogleMap(
+
+    )
 }
 
 @Preview(showBackground = true)
