@@ -174,11 +174,20 @@ fun RegistrationHeader(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                    .padding(horizontal = 4.dp, vertical = 8.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-
+                IconButton(
+                    onClick = onBackClick,
+                    modifier = Modifier.padding(start = 4.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.ArrowBack,
+                        contentDescription = stringResource(R.string.button_back),
+                        tint = LightPrimary
+                    )
+                }
                 Text(
                     text = stringResource(R.string.registration_title),
                     fontSize = 18.sp,
@@ -186,13 +195,8 @@ fun RegistrationHeader(
                     textAlign = TextAlign.Center,
                     modifier = Modifier.weight(1f)
                 )
-                IconButton(onClick = onBackClick) {
-                    Icon(
-                        imageVector = Icons.Default.ArrowBack,
-                        contentDescription = stringResource(R.string.button_back),
-                        tint = LightPrimary
-                    )
-                }
+                // Empty box for symmetrical spacing
+                Box(modifier = Modifier.size(48.dp))
             }
 
             Text(
@@ -203,7 +207,6 @@ fun RegistrationHeader(
         }
     }
 }
-
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -220,8 +223,11 @@ fun RegistrationScreen(
             modifier = modifier
                 .fillMaxSize()
                 .background(LightBackground)
+                .systemBarsPadding() // Add padding for system bars
         ) {
-            Column {
+            Column(
+                modifier = Modifier.fillMaxSize()
+            ) {
                 // Fixed header
                 RegistrationHeader(onBackClick = onBackClick)
 
@@ -231,7 +237,7 @@ fun RegistrationScreen(
                         .fillMaxWidth()
                         .verticalScroll(rememberScrollState())
                         .padding(horizontal = 20.dp)
-                        .padding(vertical = 16.dp)
+                        .padding(vertical = 8.dp)
                 ) {
                     var firstName by remember { mutableStateOf("") }
                     var lastName by remember { mutableStateOf("") }
@@ -253,7 +259,7 @@ fun RegistrationScreen(
                                 onValueChange = { firstName = it },
                                 isValid = firstName.length >= 3,
                                 onImeAction = { focusManager.moveFocus(FocusDirection.Next) },
-                                modifier = Modifier.padding(vertical = 8.dp)
+                                modifier = Modifier.padding(vertical = 4.dp)
                             )
 
                             FormTextField(
