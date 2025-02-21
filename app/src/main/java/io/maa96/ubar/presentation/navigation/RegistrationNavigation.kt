@@ -63,7 +63,10 @@ fun RegistrationNavigationGraph(
                 viewModel = registrationViewModel,
                 onInformationSent = {
                     Toast.makeText(navController.context, "Information sent", Toast.LENGTH_SHORT).show()
-                    navController.navigate(RegistrationNavigation.RegisteredList.route)
+                    navController.popBackStack(
+                        route = RegistrationNavigation.RegisteredList.route,
+                        inclusive = false
+                    )
                 },
             )
         }
