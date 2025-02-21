@@ -3,6 +3,7 @@ package io.maa96.ubar.presentation.ui.register.register
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.LatLng
+import dagger.hilt.android.lifecycle.HiltViewModel
 import io.maa96.ubar.data.dto.Location
 import io.maa96.ubar.domain.model.Resources
 import io.maa96.ubar.domain.usecase.RegisterAddressUseCase
@@ -12,6 +13,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@HiltViewModel
 class RegistrationViewModel @Inject constructor(
     private val registerAddressUseCase: RegisterAddressUseCase
 ) : ViewModel() {

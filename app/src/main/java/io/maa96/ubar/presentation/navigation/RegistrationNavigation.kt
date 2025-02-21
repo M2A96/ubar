@@ -13,8 +13,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import io.maa96.ubar.presentation.ui.list.ListScreen
 import io.maa96.ubar.presentation.ui.list.ListScreenViewModel
+import io.maa96.ubar.presentation.ui.register.map.LocationPickerScreen
 import io.maa96.ubar.presentation.ui.register.map.LocationPickerWithPermissions
 import io.maa96.ubar.presentation.ui.register.register.RegistrationScreen
+import io.maa96.ubar.presentation.ui.register.register.RegistrationViewModel
 
 sealed class RegistrationNavigation(val route: String) {
     object Registration : RegistrationNavigation("registration")
@@ -29,12 +31,13 @@ fun RegistrationNavigationGraph(
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val registrationViewModel: RegistrationViewModel = hiltViewModel()
+
     NavHost(
         navController = navController,
         startDestination = RegistrationNavigation.RegisteredList.route,
         modifier = modifier
     ) {
-
         composable(route = RegistrationNavigation.RegisteredList.route) {
             val viewModel: ListScreenViewModel = hiltViewModel()
             val state = viewModel.state.collectAsState()
@@ -42,12 +45,13 @@ fun RegistrationNavigationGraph(
             ListScreen(
                 state = state.value,
                 onNavigateBack = { navController.popBackStack() },
-                onAddAddressClick = { navController.navigate(RegistrationNavigation.Registration.route) },
+                onAddAddressClick = { navController.navigate(RegistrationNavigation.Registration.route) }
             )
         }
 
         composable(RegistrationNavigation.Registration.route) {
             RegistrationScreen(
+                viewModel = registrationViewModel,
                 onBackClick = onBackClick,
                 onNextClick = {
                     navController.navigate(RegistrationNavigation.LocationPicker.route)
@@ -55,14 +59,16 @@ fun RegistrationNavigationGraph(
                 modifier = Modifier.fillMaxSize()
             )
         }
-        
+
         composable(RegistrationNavigation.LocationPicker.route) {
-            LocationPickerWithPermissions(
-                onLocationSelected = { location ->
-                    // Handle the selected location
-                    // You might want to pass this back to the registration screen
-                    // or handle it in a ViewModel
-                    Log.i(TAG, "RegistrationNavigationGraph: Location selected: $location")
+            LocationPickerScreen(
+                viewModel = registrationViewModel,
+                onLocationSelected = {
+                    navController.navigate(RegistrationNavigation.RegisteredList.route) {
+                        popUpTo(RegistrationNavigation.RegisteredList.route) {
+                            inclusive = true
+                        }
+                    }
                 },
                 modifier = Modifier.fillMaxSize()
             )
@@ -76,7 +82,7 @@ fun RegistrationContainer(
     modifier: Modifier = Modifier
 ) {
     val navController = rememberNavController()
-    
+
     RegistrationNavigationGraph(
         navController = navController,
         onBackClick = onBackClick,

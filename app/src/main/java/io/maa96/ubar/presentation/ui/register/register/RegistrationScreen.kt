@@ -29,6 +29,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import io.maa96.ubar.R
 import io.maa96.ubar.presentation.theme.*
 
@@ -208,44 +209,43 @@ fun RegistrationHeader(
     }
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun RegistrationScreen(
+    viewModel: RegistrationViewModel = hiltViewModel(),
     onBackClick: () -> Unit,
     onNextClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val state by viewModel.state.collectAsState()
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
+
+    // LaunchedEffect to handle errors and navigation
+    LaunchedEffect(state.error) {
+        state.error?.let {
+            // Handle error, maybe show a snackbar
+        }
+    }
 
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
         Box(
             modifier = modifier
                 .fillMaxSize()
                 .background(LightBackground)
-                .systemBarsPadding() // Add padding for system bars
+                .systemBarsPadding()
         ) {
-            Column(
-                modifier = Modifier.fillMaxSize()
-            ) {
-                // Fixed header
-                RegistrationHeader(onBackClick = onBackClick)
+            Column(modifier = Modifier.fillMaxSize()) {
+                RegistrationHeader(onBackClick = {
+                    viewModel.processIntent(RegistrationIntent.NavigateBack)
+                    onBackClick()
+                })
 
-                // Scrollable content
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
                         .verticalScroll(rememberScrollState())
-                        .padding(horizontal = 20.dp)
-                        .padding(vertical = 8.dp)
+                        .padding(horizontal = 20.dp, vertical = 8.dp)
                 ) {
-                    var firstName by remember { mutableStateOf("") }
-                    var lastName by remember { mutableStateOf("") }
-                    var mobile by remember { mutableStateOf("") }
-                    var phone by remember { mutableStateOf("") }
-                    var address by remember { mutableStateOf("") }
-                    var gender by remember { mutableStateOf(Genders.MALE) }
-
                     Surface(
                         modifier = Modifier.fillMaxWidth(),
                         color = LightSurface,
@@ -255,43 +255,43 @@ fun RegistrationScreen(
                         Column(modifier = Modifier.padding(16.dp)) {
                             FormTextField(
                                 labelResourceId = R.string.label_first_name,
-                                value = firstName,
-                                onValueChange = { firstName = it },
-                                isValid = firstName.length >= 3,
+                                value = state.firstName,
+                                onValueChange = { viewModel.processIntent(RegistrationIntent.UpdateFirstName(it)) },
+                                isValid = state.isFirstNameValid,
                                 onImeAction = { focusManager.moveFocus(FocusDirection.Next) },
                                 modifier = Modifier.padding(vertical = 4.dp)
                             )
 
                             FormTextField(
                                 labelResourceId = R.string.label_last_name,
-                                value = lastName,
-                                onValueChange = { lastName = it },
-                                isValid = lastName.length >= 3,
+                                value = state.lastName,
+                                onValueChange = { viewModel.processIntent(RegistrationIntent.UpdateLastName(it)) },
+                                isValid = state.isLastNameValid,
                                 onImeAction = { focusManager.moveFocus(FocusDirection.Next) },
                                 modifier = Modifier.padding(vertical = 8.dp)
                             )
 
                             FormTextField(
                                 labelResourceId = R.string.label_mobile,
-                                value = mobile,
-                                onValueChange = { mobile = it },
-                                isValid = mobile.matches(Regex("^09\\d{9}$")),
+                                value = state.mobile,
+                                onValueChange = { viewModel.processIntent(RegistrationIntent.UpdateMobile(it)) },
+                                isValid = state.isMobileValid,
                                 onImeAction = { focusManager.moveFocus(FocusDirection.Next) },
                                 modifier = Modifier.padding(vertical = 8.dp)
                             )
 
                             FormTextField(
                                 labelResourceId = R.string.label_phone,
-                                value = phone,
-                                onValueChange = { phone = it },
+                                value = state.phone,
+                                onValueChange = { viewModel.processIntent(RegistrationIntent.UpdatePhone(it)) },
                                 onImeAction = { focusManager.moveFocus(FocusDirection.Next) },
                                 modifier = Modifier.padding(vertical = 8.dp)
                             )
 
                             FormTextField(
                                 labelResourceId = R.string.label_address,
-                                value = address,
-                                onValueChange = { address = it },
+                                value = state.address,
+                                onValueChange = { viewModel.processIntent(RegistrationIntent.UpdateAddress(it)) },
                                 imeAction = ImeAction.Done,
                                 onImeAction = { keyboardController?.hide() },
                                 modifier = Modifier.padding(vertical = 8.dp)
@@ -305,12 +305,14 @@ fun RegistrationScreen(
                             )
 
                             GenderToggle(
-                                selected = gender,
-                                onGenderSelected = { gender = it }
+                                selected = state.gender,
+                                onGenderSelected = { viewModel.processIntent(RegistrationIntent.UpdateGender(it)) }
                             )
 
                             Button(
-                                onClick = onNextClick,
+                                onClick = {
+                                    onNextClick()
+                                },
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(vertical = 16.dp),
@@ -334,14 +336,4 @@ fun RegistrationScreen(
             }
         }
     }
-}
-
-@Preview
-@Composable
-fun RegistrationScreenPreview() {
-    RegistrationScreen(
-        onBackClick = {},
-        modifier = Modifier.fillMaxSize(),
-        onNextClick = {}
-    )
 }

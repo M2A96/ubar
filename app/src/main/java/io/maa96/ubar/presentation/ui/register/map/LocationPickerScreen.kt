@@ -17,28 +17,43 @@ import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.*
 import io.maa96.ubar.R
+import io.maa96.ubar.presentation.ui.register.register.RegistrationIntent
+import io.maa96.ubar.presentation.ui.register.register.RegistrationViewModel
 
 @Composable
 fun LocationPickerScreen(
+    viewModel: RegistrationViewModel,
     onLocationSelected: (LatLng) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val state by viewModel.state.collectAsState()
     val context = LocalContext.current
-    val mapProperties by remember {
+
+    // Check location permissions
+    val hasLocationPermission = remember(context) {
+        ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ) == PackageManager.PERMISSION_GRANTED
+    }
+
+    // Update map properties based on permission state
+    val mapProperties by remember(hasLocationPermission) {
         mutableStateOf(
             MapProperties(
                 mapType = MapType.NORMAL,
-                isMyLocationEnabled = ContextCompat.checkSelfPermission(
-                    context,
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                ) == PackageManager.PERMISSION_GRANTED
+                isMyLocationEnabled = hasLocationPermission
             )
         )
     }
 
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(
-            LatLng(40.7128, -74.0060), // Default to New York City
+            state.location ?: LatLng(35.6892, 51.3890), // Default to Tehran
             12f
         )
     }
@@ -48,7 +63,7 @@ fun LocationPickerScreen(
             modifier = Modifier.fillMaxSize(),
             properties = mapProperties,
             cameraPositionState = cameraPositionState,
-            onMapClick = {  }
+            onMapClick = { }
         )
 
         // Center marker
@@ -56,14 +71,10 @@ fun LocationPickerScreen(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
-            // You can replace this with a custom marker image
-            Text(
-                text = "📍",
-                fontSize = 36.sp
-            )
+            Text(text = "📍", fontSize = 36.sp)
         }
 
-        // Confirm button at the bottom
+        // Confirm button
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -73,6 +84,8 @@ fun LocationPickerScreen(
             Button(
                 onClick = {
                     val centerPosition = cameraPositionState.position.target
+                    viewModel.processIntent(RegistrationIntent.UpdateLocation(centerPosition))
+                    viewModel.processIntent(RegistrationIntent.Submit)
                     onLocationSelected(centerPosition)
                 },
                 modifier = Modifier

@@ -16,9 +16,11 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import com.google.android.gms.maps.model.LatLng
 import io.maa96.ubar.R
+import io.maa96.ubar.presentation.ui.register.register.RegistrationViewModel
 
 @Composable
 fun LocationPickerWithPermissions(
+    viewModel: RegistrationViewModel,
     onLocationSelected: (LatLng) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -69,12 +71,14 @@ fun LocationPickerWithPermissions(
                 tonalElevation = 2.dp
             ) {
                 LocationPickerScreen(
+                    viewModel = viewModel,  // Pass the ViewModel
                     onLocationSelected = onLocationSelected,
                     modifier = Modifier.fillMaxSize()
                 )
             }
         }
     } else {
+        // Permission request UI remains the same
         Box(
             modifier = modifier
                 .fillMaxSize()
