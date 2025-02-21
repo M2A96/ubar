@@ -283,6 +283,7 @@ fun RegistrationScreen(
                             FormTextField(
                                 labelResourceId = R.string.label_phone,
                                 value = state.phone,
+                                isValid = state.isPhoneValid,
                                 onValueChange = { viewModel.processIntent(RegistrationIntent.UpdatePhone(it)) },
                                 onImeAction = { focusManager.moveFocus(FocusDirection.Next) },
                                 modifier = Modifier.padding(vertical = 8.dp)
@@ -293,6 +294,7 @@ fun RegistrationScreen(
                                 value = state.address,
                                 onValueChange = { viewModel.processIntent(RegistrationIntent.UpdateAddress(it)) },
                                 imeAction = ImeAction.Done,
+                                isValid = state.isAddressValid,
                                 onImeAction = { keyboardController?.hide() },
                                 modifier = Modifier.padding(vertical = 8.dp)
                             )

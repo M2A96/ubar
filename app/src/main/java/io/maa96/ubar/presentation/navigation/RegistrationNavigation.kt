@@ -2,6 +2,7 @@ package io.maa96.ubar.presentation.navigation
 
 import android.content.ContentValues.TAG
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -15,6 +16,7 @@ import io.maa96.ubar.presentation.ui.list.ListScreen
 import io.maa96.ubar.presentation.ui.list.ListScreenViewModel
 import io.maa96.ubar.presentation.ui.register.map.LocationPickerScreen
 import io.maa96.ubar.presentation.ui.register.map.LocationPickerWithPermissions
+import io.maa96.ubar.presentation.ui.register.register.RegistrationIntent
 import io.maa96.ubar.presentation.ui.register.register.RegistrationScreen
 import io.maa96.ubar.presentation.ui.register.register.RegistrationViewModel
 
@@ -61,16 +63,11 @@ fun RegistrationNavigationGraph(
         }
 
         composable(RegistrationNavigation.LocationPicker.route) {
-            LocationPickerScreen(
+            LocationPickerWithPermissions(
                 viewModel = registrationViewModel,
-                onLocationSelected = {
-                    navController.navigate(RegistrationNavigation.RegisteredList.route) {
-                        popUpTo(RegistrationNavigation.RegisteredList.route) {
-                            inclusive = true
-                        }
-                    }
+                onLocationSelected = { location ->
+                    registrationViewModel.processIntent(RegistrationIntent.Submit)
                 },
-                modifier = Modifier.fillMaxSize()
             )
         }
     }

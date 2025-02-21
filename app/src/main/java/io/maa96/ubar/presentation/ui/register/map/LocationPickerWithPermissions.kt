@@ -71,8 +71,8 @@ fun LocationPickerWithPermissions(
                 tonalElevation = 2.dp
             ) {
                 LocationPickerScreen(
-                    viewModel = viewModel,  // Pass the ViewModel
-                    onLocationSelected = onLocationSelected,
+                    viewModel = viewModel,
+                    onInformationSent = onLocationSelected,
                     modifier = Modifier.fillMaxSize()
                 )
             }

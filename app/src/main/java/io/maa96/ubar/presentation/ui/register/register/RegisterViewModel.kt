@@ -53,7 +53,8 @@ class RegistrationViewModel @Inject constructor(
             is RegistrationIntent.UpdatePhone -> {
                 _state.update { currentState ->
                     currentState.copy(
-                        phone = intent.phone
+                        phone = intent.phone,
+                        isPhoneValid = intent.phone.matches(Regex("^0\\d{10}$"))
                     )
                 }
             }
@@ -61,7 +62,8 @@ class RegistrationViewModel @Inject constructor(
             is RegistrationIntent.UpdateAddress -> {
                 _state.update { currentState ->
                     currentState.copy(
-                        address = intent.address
+                        address = intent.address,
+                        isAddressValid = intent.address.isNotBlank()
                     )
                 }
             }
@@ -146,6 +148,8 @@ class RegistrationViewModel @Inject constructor(
         return state.isFirstNameValid &&
                 state.isLastNameValid &&
                 state.isMobileValid &&
+                state.isPhoneValid &&
+                state.isAddressValid &&
                 state.location != null &&
                 state.address.isNotBlank()
     }
@@ -159,7 +163,9 @@ data class RegistrationUiState(
     val mobile: String = "",
     val isMobileValid: Boolean = false,
     val phone: String = "",
+    val isPhoneValid: Boolean = false,
     val address: String = "",
+    val isAddressValid: Boolean = false,
     val gender: Genders = Genders.MALE,
     val location: LatLng? = null,
     val isLoading: Boolean = false,

@@ -2,6 +2,7 @@ package io.maa96.ubar.presentation.ui.register.map
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
@@ -23,11 +24,27 @@ import io.maa96.ubar.presentation.ui.register.register.RegistrationViewModel
 @Composable
 fun LocationPickerScreen(
     viewModel: RegistrationViewModel,
-    onLocationSelected: (LatLng) -> Unit,
+    onInformationSent: (LatLng) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val state by viewModel.state.collectAsState()
     val context = LocalContext.current
+
+    // Monitor error state
+    LaunchedEffect(state.error) {
+        state.error?.let { error ->
+            Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    // Monitor loading state and success
+    LaunchedEffect(state.isLoading) {
+        if (!state.isLoading && state.error == null) {
+            state.location?.let { location ->
+                onInformationSent(location)
+            }
+        }
+    }
 
     // Check location permissions
     val hasLocationPermission = remember(context) {
@@ -86,7 +103,6 @@ fun LocationPickerScreen(
                     val centerPosition = cameraPositionState.position.target
                     viewModel.processIntent(RegistrationIntent.UpdateLocation(centerPosition))
                     viewModel.processIntent(RegistrationIntent.Submit)
-                    onLocationSelected(centerPosition)
                 },
                 modifier = Modifier
                     .fillMaxWidth()
