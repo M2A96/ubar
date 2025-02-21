@@ -7,4 +7,28 @@
     <string name="exact_address">آدرس دقیق</string>
     <string name="next_step">مرحله بعد</string>
 
+    <string name="registration_title">ثبت نام</string>
+    <string name="registration_subtitle">لطفا اطلاعات ورود خود را وارد نمایید.</string>
+
+    <!-- Form Labels -->
+    <string name="label_first_name">نام</string>
+    <string name="label_last_name">نام خانوادگی</string>
+    <string name="label_mobile">تلفن همراه</string>
+    <string name="label_phone">تلفن ثابت</string>
+    <string name="label_address">آدرس دقیق</string>
+    <string name="label_gender">جنسیت</string>
+
+    <!-- Gender Options -->
+    <string name="gender_male">آقا</string>
+    <string name="gender_female">خانم</string>
+
+    <!-- Buttons -->
+    <string name="button_next">مرحله بعد</string>
+    <string name="button_back">بازگشت</string>
+
+    <!-- Validation -->
+    <string name="content_description_valid">معتبر</string>
+    <string name="content_description_invalid">نامعتبر</string>
+    <string name="location_permission_is_required">Location permission is required</string>
+    <string name="grant_permission">Grant Permission</string>
 </resources>
