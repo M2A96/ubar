@@ -7,6 +7,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import io.maa96.ubar.data.dto.Location
 import io.maa96.ubar.domain.model.Resources
 import io.maa96.ubar.domain.usecase.RegisterAddressUseCase
+import io.maa96.ubar.util.Validator
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -15,7 +16,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RegistrationViewModel @Inject constructor(
-    private val registerAddressUseCase: RegisterAddressUseCase
+    private val registerAddressUseCase: RegisterAddressUseCase,
+    private val validator: Validator
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(RegistrationUiState())
@@ -27,7 +29,7 @@ class RegistrationViewModel @Inject constructor(
                 _state.update { currentState ->
                     currentState.copy(
                         firstName = intent.firstName,
-                        isFirstNameValid = intent.firstName.length >= 3
+                        isFirstNameValid = validator.isFirstNameValid(intent.firstName)
                     )
                 }
             }
@@ -36,7 +38,7 @@ class RegistrationViewModel @Inject constructor(
                 _state.update { currentState ->
                     currentState.copy(
                         lastName = intent.lastName,
-                        isLastNameValid = intent.lastName.length >= 3
+                        isLastNameValid = validator.isLastNameValid(intent.lastName)
                     )
                 }
             }
@@ -45,7 +47,7 @@ class RegistrationViewModel @Inject constructor(
                 _state.update { currentState ->
                     currentState.copy(
                         mobile = intent.mobile,
-                        isMobileValid = intent.mobile.matches(Regex("^09\\d{9}$"))
+                        isMobileValid = validator.isPhoneNumberValid(intent.mobile)
                     )
                 }
             }
@@ -54,7 +56,7 @@ class RegistrationViewModel @Inject constructor(
                 _state.update { currentState ->
                     currentState.copy(
                         phone = intent.phone,
-                        isPhoneValid = intent.phone.matches(Regex("^0\\d{10}$"))
+                        isPhoneValid = validator.isPhoneNumberValid(intent.phone)
                     )
                 }
             }
@@ -63,7 +65,7 @@ class RegistrationViewModel @Inject constructor(
                 _state.update { currentState ->
                     currentState.copy(
                         address = intent.address,
-                        isAddressValid = intent.address.isNotBlank()
+                        isAddressValid = validator.validateStringNotEmpty(intent.address)
                     )
                 }
             }
@@ -197,5 +199,4 @@ sealed interface RegistrationIntent {
     data object Submit : RegistrationIntent
     data object NavigateBack : RegistrationIntent
     data object ResetState : RegistrationIntent
-
 }

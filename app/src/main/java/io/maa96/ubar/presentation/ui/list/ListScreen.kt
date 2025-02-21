@@ -1,6 +1,8 @@
 package io.maa96.ubar.presentation.ui.list
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -18,6 +20,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import io.maa96.ubar.R
 import io.maa96.ubar.domain.model.Address
+import io.maa96.ubar.presentation.theme.UbarTheme
 
 @Composable
 fun ListScreen(
@@ -131,42 +134,70 @@ fun AddressCard(
         modifier = modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp),
-        shape = RoundedCornerShape(8.dp)
+        shape = RoundedCornerShape(8.dp),
+        border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary)
     ) {
         Column(
             modifier = Modifier
-                .padding(16.dp)
                 .fillMaxWidth()
+                .padding(8.dp)
+                .border(BorderStroke(1.dp, MaterialTheme.colorScheme.primary), shape = RoundedCornerShape(8.dp))
+                .padding(8.dp) // Inner padding to move contents inside
         ) {
-            Text(
-                text = address.address,
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier.fillMaxWidth(),
-                textAlign = TextAlign.End
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            // Address Row - Wrap in a Box with full width
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth() // Ensure it takes full width like the Row below
+                    .border(BorderStroke(1.dp, MaterialTheme.colorScheme.primary), shape = RoundedCornerShape(4.dp))
+                    .padding(8.dp) // Padding inside border
             ) {
                 Text(
-                    text = address.coordinateMobile,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.weight(1f),
-                    textAlign = TextAlign.Start
+                    text = address.address,
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    textAlign = TextAlign.End,
+                    modifier = Modifier.fillMaxWidth() // Ensures text uses full width inside box
                 )
+            }
 
-                Text(
-                    text = address.firstNameLastName,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.weight(1f),
-                    textAlign = TextAlign.End
-                )
+            Spacer(modifier = Modifier.height(8.dp)) // Space between rows
+
+            // Phone and Name Row - Ensure full width
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                // First box (Phone Number)
+                Box(
+                    modifier = Modifier
+                        .weight(1f) // Ensures equal width as second box
+                        .border(BorderStroke(1.dp, MaterialTheme.colorScheme.primary), shape = RoundedCornerShape(4.dp))
+                        .padding(8.dp) // Inner padding inside border
+                ) {
+                    Text(
+                        text = address.coordinateMobile,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        textAlign = TextAlign.Start,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+
+                // Second box (Full Name)
+                Box(
+                    modifier = Modifier
+                        .weight(1f) // Ensures equal width as first box
+                        .border(BorderStroke(1.dp, MaterialTheme.colorScheme.primary), shape = RoundedCornerShape(4.dp))
+                        .padding(8.dp) // Inner padding inside border
+                ) {
+                    Text(
+                        text = address.firstNameLastName,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        textAlign = TextAlign.End,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
             }
         }
     }
@@ -188,7 +219,7 @@ fun ListScreenPreview() {
         )
     )
 
-    MaterialTheme {
+    UbarTheme {
         ListScreen(
             state = ListScreenState(addresses = addresses),
             onNavigateBack = {},
