@@ -1,4 +1,4 @@
-package io.maa96.ubar.presentation.ui.register.register
+package io.maa96.ubar.presentation.ui.register
 
 import android.util.Log
 import androidx.lifecycle.ViewModel

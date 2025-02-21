@@ -8,7 +8,6 @@ import io.maa96.ubar.domain.model.Resources
 import io.maa96.ubar.domain.usecase.GetAddressUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
