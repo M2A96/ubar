@@ -1,4 +1,4 @@
-package io.maa96.ubar.presentation.ui.login
+package io.maa96.ubar.presentation.ui.register
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border

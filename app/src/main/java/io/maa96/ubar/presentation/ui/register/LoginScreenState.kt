@@ -1,4 +1,4 @@
-package io.maa96.ubar.presentation.ui.login
+package io.maa96.ubar.presentation.ui.register
 
 import io.maa96.ubar.data.dto.Location
 
