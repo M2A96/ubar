@@ -41,7 +41,8 @@ fun RegistrationNavigationGraph(
 
             ListScreen(
                 state = state.value,
-                onNavigateBack = { navController.popBackStack() }
+                onNavigateBack = { navController.popBackStack() },
+                onAddAddressClick = { navController.navigate(RegistrationNavigation.Registration.route) },
             )
         }
 
