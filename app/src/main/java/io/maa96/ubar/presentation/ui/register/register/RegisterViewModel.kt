@@ -91,6 +91,10 @@ class RegistrationViewModel @Inject constructor(
             RegistrationIntent.NavigateBack -> {
                 // Handle navigation in the UI layer
             }
+
+            RegistrationIntent.ResetState -> {
+                resetState()
+            }
         }
     }
 
@@ -112,7 +116,8 @@ class RegistrationViewModel @Inject constructor(
                         _state.update {
                             it.copy(
                                 isLoading = false,
-                                error = null
+                                error = null,
+                                isSubmissionSuccessful = true
                             )
                         }
                     }
@@ -120,7 +125,8 @@ class RegistrationViewModel @Inject constructor(
                         _state.update {
                             it.copy(
                                 isLoading = false,
-                                error = result.message
+                                error = result.message,
+                                isSubmissionSuccessful = false
                             )
                         }
                     }
@@ -129,6 +135,12 @@ class RegistrationViewModel @Inject constructor(
                     }
                 }
             }
+        }
+    }
+
+    private fun resetState() {
+        _state.update {
+            RegistrationUiState()
         }
     }
 
@@ -169,7 +181,9 @@ data class RegistrationUiState(
     val gender: Genders = Genders.MALE,
     val location: LatLng? = null,
     val isLoading: Boolean = false,
-    val error: String? = null
+    val error: String? = null,
+    val isSubmissionSuccessful: Boolean = false
+
 )
 
 sealed interface RegistrationIntent {
@@ -182,4 +196,6 @@ sealed interface RegistrationIntent {
     data class UpdateLocation(val location: LatLng) : RegistrationIntent
     data object Submit : RegistrationIntent
     data object NavigateBack : RegistrationIntent
+    data object ResetState : RegistrationIntent
+
 }

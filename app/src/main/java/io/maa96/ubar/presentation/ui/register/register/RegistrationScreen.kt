@@ -220,13 +220,6 @@ fun RegistrationScreen(
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    // LaunchedEffect to handle errors and navigation
-    LaunchedEffect(state.error) {
-        state.error?.let {
-            // Handle error, maybe show a snackbar
-        }
-    }
-
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
         Box(
             modifier = modifier

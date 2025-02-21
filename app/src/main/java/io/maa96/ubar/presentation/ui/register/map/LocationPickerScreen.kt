@@ -24,7 +24,7 @@ import io.maa96.ubar.presentation.ui.register.register.RegistrationViewModel
 @Composable
 fun LocationPickerScreen(
     viewModel: RegistrationViewModel,
-    onInformationSent: (LatLng) -> Unit,
+    onInformationSent: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val state by viewModel.state.collectAsState()
@@ -37,16 +37,13 @@ fun LocationPickerScreen(
         }
     }
 
-    // Monitor loading state and success
-    LaunchedEffect(state.isLoading) {
-        if (!state.isLoading && state.error == null) {
-            state.location?.let { location ->
-                onInformationSent(location)
-            }
+    LaunchedEffect(state.isSubmissionSuccessful) {
+        if (state.isSubmissionSuccessful) {
+            onInformationSent()
+            viewModel.processIntent(RegistrationIntent.ResetState)
         }
     }
 
-    // Check location permissions
     val hasLocationPermission = remember(context) {
         ContextCompat.checkSelfPermission(
             context,

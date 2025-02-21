@@ -14,14 +14,13 @@ import android.content.pm.PackageManager
 import androidx.core.content.ContextCompat
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import com.google.android.gms.maps.model.LatLng
 import io.maa96.ubar.R
 import io.maa96.ubar.presentation.ui.register.register.RegistrationViewModel
 
 @Composable
 fun LocationPickerWithPermissions(
     viewModel: RegistrationViewModel,
-    onLocationSelected: (LatLng) -> Unit,
+    onInformationSent: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
@@ -72,7 +71,7 @@ fun LocationPickerWithPermissions(
             ) {
                 LocationPickerScreen(
                     viewModel = viewModel,
-                    onInformationSent = onLocationSelected,
+                    onInformationSent = onInformationSent,
                     modifier = Modifier.fillMaxSize()
                 )
             }
