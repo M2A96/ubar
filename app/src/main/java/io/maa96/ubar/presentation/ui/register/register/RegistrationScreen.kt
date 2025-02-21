@@ -1,4 +1,4 @@
-package io.maa96.ubar.presentation.ui.register
+package io.maa96.ubar.presentation.ui.register.register
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background

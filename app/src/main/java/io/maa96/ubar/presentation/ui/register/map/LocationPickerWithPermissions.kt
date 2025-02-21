@@ -1,6 +1,5 @@
-package io.maa96.ubar.presentation.ui.register
+package io.maa96.ubar.presentation.ui.register.map
 
-import LocationPickerScreen
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*

@@ -1,3 +1,5 @@
+package io.maa96.ubar.presentation.ui.register.map
+
 import android.Manifest
 import android.content.pm.PackageManager
 import androidx.compose.foundation.layout.*

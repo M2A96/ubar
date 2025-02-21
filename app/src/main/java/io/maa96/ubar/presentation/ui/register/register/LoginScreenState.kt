@@ -1,4 +1,4 @@
-package io.maa96.ubar.presentation.ui.register
+package io.maa96.ubar.presentation.ui.register.register
 
 import io.maa96.ubar.data.dto.Location
 
@@ -10,7 +10,7 @@ data class LoginData(
     val address: String = "",
     val gender: Gender = Gender.MALE,
 
-)
+    )
 
 data class LoginScreenState (
     val location: Location = Location(),

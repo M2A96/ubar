@@ -1,4 +1,4 @@
-package io.maa96.ubar.presentation.ui.register
+package io.maa96.ubar.presentation.ui.register.register
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -15,30 +15,30 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class LoginScreenViewModel @Inject constructor(
+class RegistrationScreenViewModel @Inject constructor(
     private val registerAddressUseCase: RegisterAddressUseCase
 ): ViewModel() {
 
     private val _state = MutableStateFlow(LoginScreenState())
     val state = _state.asStateFlow()
 
-    fun onEvent(event: LoginScreenEvent) {
+    fun onEvent(event: RegistrationScreenEvent) {
         when(event) {
-            is LoginScreenEvent.OnNameChange -> {
+            is RegistrationScreenEvent.OnNameChange -> {
                 _state.update {
                     it.copy(
                         name = event.name
                     )
                 }
             }
-            is LoginScreenEvent.OnFamilyNameChange -> {
+            is RegistrationScreenEvent.OnFamilyNameChange -> {
                 _state.update {
                     it.copy(
                         familyName = event.familyName
                     )
                 }
             }
-            is LoginScreenEvent.OnMobilePhoneChange -> {
+            is RegistrationScreenEvent.OnMobilePhoneChange -> {
                 _state.update {
                     it.copy(
                         mobilePhone = event.mobilePhone
@@ -46,24 +46,24 @@ class LoginScreenViewModel @Inject constructor(
                 }
             }
 
-            is LoginScreenEvent.OnAddressChange -> {
+            is RegistrationScreenEvent.OnAddressChange -> {
                 _state.update {
                     it.copy(
                         address = event.address
                     )
                 }
             }
-            is LoginScreenEvent.OnGenderChange -> {
+            is RegistrationScreenEvent.OnGenderChange -> {
                 updateLocation(Location(
                     gender = event.gender
                 ))
             }
-            is LoginScreenEvent.OnLandlinePhoneChange -> {
+            is RegistrationScreenEvent.OnLandlinePhoneChange -> {
                 updateLocation(Location(
                     coordinatePhoneNumber = event.landlinePhone
                 ))
             }
-            is LoginScreenEvent.OnNextButtonClick -> {
+            is RegistrationScreenEvent.OnNextButtonClick -> {
                 registerAddress(location = event.location)
             }
         }

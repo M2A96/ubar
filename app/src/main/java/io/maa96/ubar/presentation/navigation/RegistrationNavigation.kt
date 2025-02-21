@@ -13,8 +13,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import io.maa96.ubar.presentation.ui.list.ListScreen
 import io.maa96.ubar.presentation.ui.list.ListScreenViewModel
-import io.maa96.ubar.presentation.ui.register.LocationPickerWithPermissions
-import io.maa96.ubar.presentation.ui.register.RegistrationScreen
+import io.maa96.ubar.presentation.ui.register.map.LocationPickerWithPermissions
+import io.maa96.ubar.presentation.ui.register.register.RegistrationScreen
 
 sealed class RegistrationNavigation(val route: String) {
     object Registration : RegistrationNavigation("registration")
