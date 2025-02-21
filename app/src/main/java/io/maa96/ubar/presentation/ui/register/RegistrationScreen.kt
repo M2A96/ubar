@@ -6,6 +6,8 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -13,10 +15,15 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
@@ -47,6 +54,8 @@ fun FormTextField(
     value: String,
     onValueChange: (String) -> Unit,
     isValid: Boolean = false,
+    imeAction: ImeAction = ImeAction.Next,
+    onImeAction: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
@@ -63,6 +72,8 @@ fun FormTextField(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(8.dp),
                 singleLine = true,
+                keyboardOptions = KeyboardOptions(imeAction = imeAction),
+                keyboardActions = KeyboardActions(onAny = { onImeAction() }),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = LightPrimary,
                     unfocusedBorderColor = LightBorder,
@@ -76,7 +87,8 @@ fun FormTextField(
             if (value.isNotEmpty()) {
                 ValidationIcon(
                     isValid = isValid,
-                    modifier = Modifier.align(Alignment.CenterEnd)
+                    modifier = Modifier
+                        .align(Alignment.CenterEnd)
                         .padding(end = 12.dp)
                 )
             }
@@ -153,147 +165,163 @@ fun RegistrationHeader(
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .background(LightSurface),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+    Surface(
+        modifier = modifier.fillMaxWidth(),
+        color = LightSurface,
+        shadowElevation = 4.dp
     ) {
+        Column {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
 
-        Text(
-            text = stringResource(R.string.registration_title),
-            fontSize = 18.sp,
-            color = LightPrimary,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.weight(1f)
-        )
-        IconButton(
-            onClick = onBackClick,
-        ) {
-            Icon(
-                imageVector = Icons.Default.ArrowBack,
-                contentDescription = stringResource(R.string.button_back),
-                tint = LightPrimary
+                Text(
+                    text = stringResource(R.string.registration_title),
+                    fontSize = 18.sp,
+                    color = LightPrimary,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.weight(1f)
+                )
+                IconButton(onClick = onBackClick) {
+                    Icon(
+                        imageVector = Icons.Default.ArrowBack,
+                        contentDescription = stringResource(R.string.button_back),
+                        tint = LightPrimary
+                    )
+                }
+            }
+
+            Text(
+                text = stringResource(R.string.registration_subtitle),
+                color = LightOnBackground,
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
             )
         }
     }
 }
 
+
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun RegistrationScreen(
     onBackClick: () -> Unit,
     onNextClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val focusManager = LocalFocusManager.current
+    val keyboardController = LocalSoftwareKeyboardController.current
+
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
-        Column(
+        Box(
             modifier = modifier
                 .fillMaxSize()
                 .background(LightBackground)
         ) {
-            // Keep header outside of scrollable content
-            Column(
-            ) {
+            Column {
+                // Fixed header
                 RegistrationHeader(onBackClick = onBackClick)
 
-                Text(
-                    text = stringResource(R.string.registration_subtitle),
-                    color = LightOnBackground,
-                    modifier = Modifier.padding(vertical = 16.dp)
-                )
-            }
-
-            // Make the form content scrollable
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .verticalScroll(rememberScrollState())
-                    .padding(horizontal = 20.dp)
-                    .padding(bottom = 20.dp)
-            ) {
-                var firstName by remember { mutableStateOf("") }
-                var lastName by remember { mutableStateOf("") }
-                var mobile by remember { mutableStateOf("") }
-                var phone by remember { mutableStateOf("") }
-                var address by remember { mutableStateOf("") }
-                var gender by remember { mutableStateOf(Genders.MALE) }
-
-                Surface(
-                    modifier = Modifier.fillMaxWidth(),
-                    color = LightSurface,
-                    shape = RoundedCornerShape(16.dp),
-                    border = BorderStroke(1.dp, LightBorder)
+                // Scrollable content
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .verticalScroll(rememberScrollState())
+                        .padding(horizontal = 20.dp)
+                        .padding(vertical = 16.dp)
                 ) {
-                    Column(modifier = Modifier.padding(16.dp)) {
-                        FormTextField(
-                            labelResourceId = R.string.label_first_name,
-                            value = firstName,
-                            onValueChange = { firstName = it },
-                            isValid = firstName.length >= 3,
-                            modifier = Modifier.padding(vertical = 8.dp)
-                        )
+                    var firstName by remember { mutableStateOf("") }
+                    var lastName by remember { mutableStateOf("") }
+                    var mobile by remember { mutableStateOf("") }
+                    var phone by remember { mutableStateOf("") }
+                    var address by remember { mutableStateOf("") }
+                    var gender by remember { mutableStateOf(Genders.MALE) }
 
-                        FormTextField(
-                            labelResourceId = R.string.label_last_name,
-                            value = lastName,
-                            onValueChange = { lastName = it },
-                            isValid = lastName.length >= 3,
-                            modifier = Modifier.padding(vertical = 8.dp)
-                        )
-
-                        FormTextField(
-                            labelResourceId = R.string.label_mobile,
-                            value = mobile,
-                            onValueChange = { mobile = it },
-                            isValid = mobile.matches(Regex("^09\\d{9}$")),
-                            modifier = Modifier.padding(vertical = 8.dp)
-                        )
-
-                        FormTextField(
-                            labelResourceId = R.string.label_phone,
-                            value = phone,
-                            onValueChange = { phone = it },
-                            modifier = Modifier.padding(vertical = 8.dp)
-                        )
-
-                        FormTextField(
-                            labelResourceId = R.string.label_address,
-                            value = address,
-                            onValueChange = { address = it },
-                            modifier = Modifier.padding(vertical = 8.dp)
-                        )
-
-                        Text(
-                            text = stringResource(R.string.label_gender),
-                            color = LightPrimary,
-                            fontSize = 14.sp,
-                            modifier = Modifier.padding(vertical = 8.dp)
-                        )
-
-                        GenderToggle(
-                            selected = gender,
-                            onGenderSelected = { gender = it }
-                        )
-
-                        Button(
-                            onClick = onNextClick,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 16.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = LightSecondary,
-                                contentColor = LightPrimary
-                            ),
-                            shape = RoundedCornerShape(8.dp)
-                        ) {
-                            Text(
-                                text = stringResource(R.string.button_next),
-                                modifier = Modifier.padding(vertical = 4.dp),
-                                fontSize = 20.sp,
-                                color = LightSelectedText,
-                                fontWeight = FontWeight.Bold
+                    Surface(
+                        modifier = Modifier.fillMaxWidth(),
+                        color = LightSurface,
+                        shape = RoundedCornerShape(16.dp),
+                        border = BorderStroke(1.dp, LightBorder)
+                    ) {
+                        Column(modifier = Modifier.padding(16.dp)) {
+                            FormTextField(
+                                labelResourceId = R.string.label_first_name,
+                                value = firstName,
+                                onValueChange = { firstName = it },
+                                isValid = firstName.length >= 3,
+                                onImeAction = { focusManager.moveFocus(FocusDirection.Next) },
+                                modifier = Modifier.padding(vertical = 8.dp)
                             )
+
+                            FormTextField(
+                                labelResourceId = R.string.label_last_name,
+                                value = lastName,
+                                onValueChange = { lastName = it },
+                                isValid = lastName.length >= 3,
+                                onImeAction = { focusManager.moveFocus(FocusDirection.Next) },
+                                modifier = Modifier.padding(vertical = 8.dp)
+                            )
+
+                            FormTextField(
+                                labelResourceId = R.string.label_mobile,
+                                value = mobile,
+                                onValueChange = { mobile = it },
+                                isValid = mobile.matches(Regex("^09\\d{9}$")),
+                                onImeAction = { focusManager.moveFocus(FocusDirection.Next) },
+                                modifier = Modifier.padding(vertical = 8.dp)
+                            )
+
+                            FormTextField(
+                                labelResourceId = R.string.label_phone,
+                                value = phone,
+                                onValueChange = { phone = it },
+                                onImeAction = { focusManager.moveFocus(FocusDirection.Next) },
+                                modifier = Modifier.padding(vertical = 8.dp)
+                            )
+
+                            FormTextField(
+                                labelResourceId = R.string.label_address,
+                                value = address,
+                                onValueChange = { address = it },
+                                imeAction = ImeAction.Done,
+                                onImeAction = { keyboardController?.hide() },
+                                modifier = Modifier.padding(vertical = 8.dp)
+                            )
+
+                            Text(
+                                text = stringResource(R.string.label_gender),
+                                color = LightPrimary,
+                                fontSize = 14.sp,
+                                modifier = Modifier.padding(vertical = 8.dp)
+                            )
+
+                            GenderToggle(
+                                selected = gender,
+                                onGenderSelected = { gender = it }
+                            )
+
+                            Button(
+                                onClick = onNextClick,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 16.dp),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = LightSecondary,
+                                    contentColor = LightPrimary
+                                ),
+                                shape = RoundedCornerShape(8.dp)
+                            ) {
+                                Text(
+                                    text = stringResource(R.string.button_next),
+                                    modifier = Modifier.padding(vertical = 4.dp),
+                                    fontSize = 20.sp,
+                                    color = LightSelectedText,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
                         }
                     }
                 }
@@ -301,6 +329,7 @@ fun RegistrationScreen(
         }
     }
 }
+
 @Preview
 @Composable
 fun RegistrationScreenPreview() {

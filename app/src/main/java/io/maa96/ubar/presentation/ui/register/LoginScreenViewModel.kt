@@ -22,20 +22,6 @@ class LoginScreenViewModel @Inject constructor(
     private val _state = MutableStateFlow(LoginScreenState())
     val state = _state.asStateFlow()
 
-    init {
-        registerAddress(Location(
-            region = 1,
-            address = "sample address",
-            lat = 35.7717503,
-            lng = 51.3365315,
-            coordinateMobile = "09330192942",
-            coordinatePhoneNumber = "",
-            firstName = "sample",
-            lastName = "name",
-            gender = "MALE"
-        ))
-    }
-
     fun onEvent(event: LoginScreenEvent) {
         when(event) {
             is LoginScreenEvent.OnNameChange -> {
